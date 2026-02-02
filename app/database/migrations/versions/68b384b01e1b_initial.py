@@ -1,8 +1,8 @@
 """initial
 
-ID ревизии: a35d17b3d280
+ID ревизии: 68b384b01e1b
 Базовая ревизия: 
-Дата создания: 2026-02-01 17:14:53.797531
+Дата создания: 2026-02-02 08:04:57.514897
 
 """
 from typing import Sequence, Union
@@ -12,7 +12,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision: str = 'a35d17b3d280'
+revision: str = '68b384b01e1b'
 down_revision: Union[str, None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -24,7 +24,7 @@ def upgrade() -> None:
     op.create_table('settings',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('interval', sa.Integer(), nullable=False),
-    sa.Column('min_multiplier', sa.Float(), nullable=False),
+    sa.Column('min_growth_prct', sa.Float(), nullable=True),
     sa.Column('timeout', sa.Integer(), nullable=False),
     sa.Column('chat_id', sa.BigInteger(), nullable=True),
     sa.Column('bot_token', sa.String(), nullable=True),

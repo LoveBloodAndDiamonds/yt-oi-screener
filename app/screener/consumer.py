@@ -3,7 +3,7 @@ __all__ = ["Consumer"]
 import asyncio
 import time
 
-from unicex import Exchange, MarketType, OpenInterestItem
+from unicex import Exchange, OpenInterestItem
 from unicex.extra import TimeoutTracker
 from unicex.types import TickerDailyItem
 
@@ -25,12 +25,10 @@ class Consumer:
         producer: Producer,
         settings: SettingsDTO,
         exchange: Exchange = config.exchange,
-        market_type: MarketType = config.market_type,
     ) -> None:
         self._producer = producer
         self._settings = settings
         self._exchange = exchange
-        self._market_type = market_type
         self._telegram_bot = TelegramBot()
         self._timeout_tracker = TimeoutTracker[str]()
         self._running = True
@@ -70,7 +68,7 @@ class Consumer:
 
             ticker_daily = all_ticker_daily.get(symbol)
             if not ticker_daily:
-                logger.warning(f"Ticker daily data not found for symbol {symbol}")
+                # logger.debug(f"Ticker daily data not found for symbol {symbol}")
                 continue
 
             task = await self._process_symbol(symbol, klines, ticker_daily)
@@ -101,7 +99,6 @@ class Consumer:
                         symbol,
                         change_pct,
                         self._exchange,
-                        self._market_type,
                         ticker_daily["p"],
                         ticker_daily["q"],
                     ),

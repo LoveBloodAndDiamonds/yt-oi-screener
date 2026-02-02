@@ -10,12 +10,11 @@ from typing import Any
 from unicex import (
     Exchange,
     IUniClient,
-    MarketType,
     get_uni_client,
 )
 from unicex.types import OpenInterestDict, OpenInterestItem, TickerDailyDict
 
-from app.config import logger
+from app.config import config, logger
 
 
 class Producer:
@@ -24,9 +23,10 @@ class Producer:
     _MAX_HISTORY_LEN = 60 * 15
     """Максимальная длина истории в секундах для всех парсеров."""
 
-    """Парсер открытого интереса."""
+    _PARSE_INTERVAL = {Exchange.ASTER: 20}
+    """Интервал парсинга данных в секундах."""
 
-    _PARSE_INTERVAL = 5
+    _DEFAULT_PARSE_INTERVAL = 5
     """Интервал парсинга данных в секундах."""
 
     _CHUNK_SIZE = {Exchange.BINANCE: 20, Exchange.GATE: 7}
@@ -41,7 +41,7 @@ class Producer:
     _DEFAULT_CHUNK_INTERVAL = 0.33
     """Интервал между запросами данных в секундах по умолчанию."""
 
-    def __init__(self, exchange: Exchange, market_type: MarketType) -> None:
+    def __init__(self, exchange: Exchange = config.exchange) -> None:
         """Инициализирует парсера данных.
 
         Args:
@@ -49,7 +49,6 @@ class Producer:
             market_type (MarketType): Тип рынка с которого парсить данные.
         """
         self._exchange = exchange
-        self._market_type = market_type
         self._is_running = True
 
         self._open_interest_lock = asyncio.Lock()
@@ -76,7 +75,9 @@ class Producer:
                 logger.error(f"{self.repr} timeout error occurred")
             except Exception as e:
                 logger.exception(f"{self.repr} error: {e}")
-            await self._safe_sleep(self._PARSE_INTERVAL)
+            await self._safe_sleep(
+                self._PARSE_INTERVAL.get(self._exchange, self._DEFAULT_PARSE_INTERVAL)
+            )
 
     async def stop(self) -> None:
         """Останавливает парсер данных."""
@@ -134,7 +135,7 @@ class Producer:
             for ticker, open_interest_item in open_interest.items():
                 last_price = last_prices.get(ticker)
                 if not last_price:
-                    logger.debug(f"{self.repr} missing last price for {ticker}, keep OI as-is")
+                    # logger.debug(f"{self.repr} missing last price for {ticker}, keep OI as-is")
                     continue
 
                 try:

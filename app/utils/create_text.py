@@ -9,13 +9,12 @@ def create_text(
     symbol: str,
     change_pct: float,
     exchange: Exchange,
-    market_type: MarketType,
     daily_price: float,
     daily_volume: float,
 ) -> str:
     """Формирует красивый текст сигнала о резком изменении открытого интереса. Готовый текст для отправки пользователю."""
     # Ссылка на биржу для быстрого перехода к инструменту
-    ex_link = generate_ex_link(exchange, market_type, symbol)
+    ex_link = generate_ex_link(exchange, MarketType.FUTURES, symbol)
 
     direction_emoji = "🚀" if change_pct >= 0 else "🔻"
 

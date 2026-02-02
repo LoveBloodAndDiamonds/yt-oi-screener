@@ -10,7 +10,7 @@ from dataclasses import dataclass
 from os import getenv
 
 from sqlalchemy import URL
-from unicex import Exchange, MarketType
+from unicex import Exchange
 
 from app.schemas import EnvironmentType
 
@@ -78,9 +78,6 @@ class Configuration:
 
     exchange: Exchange = Exchange.ASTER
     """Биржа для работы скринера."""
-
-    market_type: MarketType = MarketType.FUTURES
-    """Тип рынка для работы скринера."""
 
 
 config: Configuration = Configuration()
