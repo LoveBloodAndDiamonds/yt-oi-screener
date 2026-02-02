@@ -63,7 +63,7 @@ class Producer:
         while self._is_running:
             try:
                 start_time = time.perf_counter()
-                async with self._client_context() as client:
+                async with self._client_context(logger=logger) as client:
                     snapshot = await self._fetch_open_interest_snapshot(client)
                     snapshot = await self._normalize_open_interest_snapshot(client, snapshot)
                 async with self._open_interest_lock:

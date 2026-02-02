@@ -44,7 +44,7 @@ class _DatabaseConfig:
 class _AdminConfig:
     """Настройки админ-панели."""
 
-    title: str = "Скринер объема"
+    title: str = "Скринер открытого интереса"
     """Название приложения."""
 
     logo_url: str = "https://images.icon-icons.com/3256/PNG/512/admin_lock_padlock_icon_205893.png"
