@@ -41,6 +41,9 @@ class Producer:
     _DEFAULT_CHUNK_INTERVAL = 0.33
     """Интервал между запросами данных в секундах по умолчанию."""
 
+    _TICKER_DAILY_UPDATE_INTERVAL: int = 5
+    """Интервал обновления данных о тикерах в секундах."""
+
     def __init__(self, exchange: Exchange = config.exchange) -> None:
         """Инициализирует парсера данных.
 
@@ -158,6 +161,7 @@ class Producer:
                     self._ticker_daily = await client.futures_ticker_24hr()
             except Exception as e:
                 logger.error(f"{self.repr} error while updating ticker daily: {e}")
+            await asyncio.sleep(self._TICKER_DAILY_UPDATE_INTERVAL)
 
     def _process_snapshot(
         self, open_interest: OpenInterestDict
